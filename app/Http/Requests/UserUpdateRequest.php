@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CartRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,9 @@ class CartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
-            "total_price" =>["nullable","integer","min:0"],
-            
+            "name" =>["nullable","string",],
+            "email"=>["nullable","string","unique:users,email"],
+            "password"=>["nullable","string","min:5"],
         ];
     }
 }

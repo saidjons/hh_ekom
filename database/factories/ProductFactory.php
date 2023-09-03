@@ -17,7 +17,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            "in_stock" => $this->faker->boolean(2),
+            "in_stock" => true,
             "image" => "shoes.image",
             "title" => $this->faker->sentence(),
             "price" => $this->faker->numberBetween(10,500),

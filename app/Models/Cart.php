@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Cart extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        "title",
-        "sorting_number",
-        "parent_id",
-    ];
 
-    public function subs(){
-        
-       return $this->hasMany(self::class,"parent_id");
+    protected $fillable = [
+        "user_id",
+        "total_price",
+    ];
+    
+    public function items(){
+
+      return $this->hasMany(CartItem::class,"cart_id","id");
+
     }
 }

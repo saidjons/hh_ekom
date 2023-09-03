@@ -23,6 +23,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             "title"=>["required","string","max:200"],
+            "parent_id"=>["nullable","numeric","exists:categories,id"],
         ];
     }
 }

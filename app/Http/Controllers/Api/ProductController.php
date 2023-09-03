@@ -18,7 +18,7 @@ class ProductController extends Controller
     }
 
     public function index(){
-        $products = $this->service->all();
+        $products = $this->service->allInStock();
 
         return ProductResource::collection($products);
     }

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Schema\ForeignKeyDefinition;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,11 +12,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->string("title");
-            $table->unsignedBigInteger("parent_id")->nullable();
-            $table->smallInteger("sorting_number")->nullable();
+
+            $table->unsignedBigInteger("total_price")->nullable();
+
+            $table->unsignedBigInteger("user_id");
+
+            $table->foreign("user_id")->references("id")->on("users")->cascadeOnDelete();
+            
             $table->timestamps();
         });
     }
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('carts');
     }
 };

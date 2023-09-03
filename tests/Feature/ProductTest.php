@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Models\Product;
+use App\Models\User;
 
+use App\Models\Product;
+use App\Service\UserService;
 use Illuminate\Http\Response;
 use Database\Factories\ProductFactory;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,6 +16,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
+    private $token;
+
+    function setUp():void
+    {
+        parent::setUp();
+        $user = User::factory()->create();
+        $this->token = (new UserService)->getToken($user);
+          
+    }
+
     public function test_creating_product_requires_price_field(): void
     {
         $response = $this->postJson('/api/admin/product', [
@@ -21,6 +33,8 @@ class ProductTest extends TestCase
             "description" => "new shoes",
             "in_stock" => true,
             "image" => "shoes.image"
+        ],[
+            "Authorization"=>"Bearer ".$this->token
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -33,6 +47,8 @@ class ProductTest extends TestCase
             "description" => "new shoes",
             "in_stock" => true,
             "image" => "shoes.image"
+        ],[
+            "Authorization"=>"Bearer ".$this->token
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -43,6 +59,8 @@ class ProductTest extends TestCase
         $response = $this->postJson('/api/admin/product', [
             "in_stock" => true,
             "image" => "shoes.image"
+        ],[
+            "Authorization"=>"Bearer ".$this->token
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -57,6 +75,8 @@ class ProductTest extends TestCase
             "price" => 200,
             "description" => "shoes.image",
 
+        ],[
+            "Authorization"=>"Bearer ".$this->token
         ]);
         $data = $response->json();
 
@@ -68,15 +88,17 @@ class ProductTest extends TestCase
     }
     public function test_updating_nonexisted_product_fails(): void
     {
-        $number = rand(1000,1000000);
+        $number = rand(1000, 1000000);
 
-        $response = $this->putJson("/api/admin/product/".$number, [
+        $response = $this->putJson("/api/admin/product/" . $number, [
             "in_stock" => true,
             "image" => "shoes.image",
             "title" => "shoes black updated",
             "price" => 200,
             "description" => "shoes.image",
 
+        ],[
+            "Authorization"=>"Bearer ".$this->token
         ]);
 
 
@@ -84,7 +106,7 @@ class ProductTest extends TestCase
     }
     public function test_update_product(): void
     {
-        $product =Product::factory()->create();
+        $product = Product::factory()->create();
 
         $title = "shoes black updated";
         $response = $this->putJson("/api/admin/product/" . $product->id, [
@@ -94,7 +116,7 @@ class ProductTest extends TestCase
             "price" => 200,
             "description" => "shoes.image",
 
-        ]);
+        ],[ "Authorization"=>"Bearer ".$this->token]);
 
         $response
             ->assertJson(
@@ -116,19 +138,15 @@ class ProductTest extends TestCase
         $product = Product::factory()->create();
 
 
-          $del_response = $this->delete('/api/admin/product/'.$product->id);  
-        
-        //   dd($del_response->json());
-          $del_response->assertStatus(200);
+        $del_response = $this->delete('/api/admin/product/' . $product->id,headers:[ "Authorization"=>"Bearer ".$this->token]);
 
-         
+        //   dd($del_response->json());
+        $del_response->assertStatus(200);
     }
     public function test_deleting_nonexistennce_product_fails(): void
     {
-        $number = rand(1000,1000000);
-          $del_response = $this->delete('/api/admin/product/'.$number);  
-          $del_response->assertStatus(404);
-
-         
+        $number = rand(1000, 1000000);
+        $del_response = $this->delete('/api/admin/product/' . $number,headers:[ "Authorization"=>"Bearer ".$this->token]);
+        $del_response->assertStatus(404);
     }
 }

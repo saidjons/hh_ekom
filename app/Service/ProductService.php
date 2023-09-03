@@ -8,6 +8,10 @@ use App\Models\Product;
 class ProductService
 {
 
+    public function allInStock()
+    {
+        return Product::where('in_stock',true)->get();
+    }
     public function all()
     {
         return Product::all();
@@ -46,6 +50,9 @@ class ProductService
 
     public function delete($id){
         $product = $this->findOrFail($id);
-        $product->delete();
+        if($product){
+            
+            $product->delete();
+        }
     }
 }
