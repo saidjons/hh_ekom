@@ -21,9 +21,12 @@ class CategoryTest extends TestCase
 
     function setUp():void
     {      
-          parent::setUp();
+        parent::setUp();
         $user = User::factory()->create();
-        $this->token = (new UserService)->getToken($user);
+        $service = new UserService;
+        $this->token = $service->getToken($user);
+        $role = $service->createAdminRole();
+        $user->assignRole($role);
       
     }
     
@@ -38,28 +41,8 @@ class CategoryTest extends TestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonValidationErrors('title');
     }
-    public function test_creating_product_requires_title_field(): void
-    {
-        $response = $this->postJson('/api/admin/product', [
-
-            "description" => "new shoes",
-            "in_stock" => true,
-            "image" => "shoes.image"
-        ],[ "Authorization"=>"Bearer ".$this->token]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors('title');
-    }
-    public function test_creating_product_requires_description_field(): void
-    {
-        $response = $this->postJson('/api/admin/product', [
-            "in_stock" => true,
-            "image" => "shoes.image"
-        ],[ "Authorization"=>"Bearer ".$this->token]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonValidationErrors('description');
-    }
+  
+   
 
 
     public function test_create_category(): void

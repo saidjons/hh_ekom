@@ -8,6 +8,11 @@ use App\Models\Product;
 class ProductService
 {
 
+    public function search($term)
+    {
+        return Product::search($term)->where('in_stock',true)->get();
+    }
+    
     public function allInStock()
     {
         return Product::where('in_stock',true)->get();
@@ -28,7 +33,7 @@ class ProductService
         return Product::create([
             "title" => $dto->title,
             "price" => $dto->price,
-            "image" > $dto->image,
+            "image" => $dto->image,
             "description" => $dto->description,
             "in_stock" => $dto->in_stock,
 

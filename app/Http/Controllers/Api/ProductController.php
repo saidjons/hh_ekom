@@ -15,8 +15,17 @@ class ProductController extends Controller
     public function __construct(
         protected ProductService $service,
     ) {
+         
     }
 
+    public function search(Request $r){
+
+        $search = $r->get("q");
+
+        $products = $this->service->search($search);
+
+        return ProductResource::collection($products);
+    }
     public function index(){
         $products = $this->service->allInStock();
 
@@ -29,7 +38,7 @@ class ProductController extends Controller
     }
     
     public function store(ProductRequest $r)
-    {
+    {   
 
         $product = $this->service->store(
             ProductDTO::fromApiRequest($r)

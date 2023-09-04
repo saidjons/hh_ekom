@@ -10,7 +10,18 @@ use App\Http\Controllers\Api\CategoryController;
 Route::post("login",[UserController::class,"login"]);
 Route::post("register",[UserController::class,"register"]);
 
-Route::prefix("admin")->middleware(["auth:sanctum"])->group(function(){
+Route::get("search",[ProductController::class,"search"]);
+
+
+Route::prefix("buyer")->middleware(["auth:sanctum"])->group(function(){
+    Route::post("cart/add",[CartController::class,"store"]);
+    Route::get("cart",[CartController::class,"show"]);
+    Route::delete("cart/{id}",[CartController::class,"delete"]);
+
+
+});
+
+Route::prefix("admin")->middleware(["auth:sanctum","role:admin"])->group(function(){
     ###### user #######
     Route::get("user",[UserController::class,"index"]);
     
@@ -32,19 +43,15 @@ Route::prefix("admin")->middleware(["auth:sanctum"])->group(function(){
 
     Route::post("category",[CategoryController::class,"store"]);
     Route::put("category/{category}",[CategoryController::class,"update"]);
+    
+    Route::put("category/sort/{category}",[CategoryController::class,"sortSubs"]);
+
     Route::delete("category/{id}",[CategoryController::class,"delete"]);
     // TODO:add subs to category
     
     
-    // TODO:store sorting_number of  subs 
-
         ####### cart ##############
-    Route::get("cart",[CartController::class,"show"]);
-    Route::post("cart/add",[CartController::class,"store"]);
-    Route::delete("cart/{id}",[CartController::class,"delete"]);
-
+  
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+ 

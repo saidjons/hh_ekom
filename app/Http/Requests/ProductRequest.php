@@ -23,7 +23,7 @@ class ProductRequest extends FormRequest
     {
         return [
             "title"=>["required","string","max:200"],
-            "image"=>["required","string"],
+            "image"=>["required","image:jpg,png,jpeg","max:5048"],
             "price"=>["required","numeric"],
             "description"=>["string","required"],
             "in_stock"=>["required","boolean"],

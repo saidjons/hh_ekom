@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Rules\CategorySubs;
+use App\Rules\CategorySubsWithIds;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryRequest extends FormRequest
+class SortCatSubsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +24,7 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title"=>["required","string","max:200"],
-            "subs"=>["nullable","array",new CategorySubs()],
-            "parent_id"=>["nullable","numeric","exists:categories,id"],
+            "subs"=>["required","array",new CategorySubsWithIds()],
         ];
     }
 }

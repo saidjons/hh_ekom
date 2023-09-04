@@ -19,7 +19,7 @@ class CategoryResource extends JsonResource
             "title" => $this->title,
             "parent_id" => $this->parent_id,
             "sorting_number" => $this->sorting_number,
-            "subs" => $request->get("relation") == "subs" ?$this->subs :[],
+            "subs" => $this->subs,
             
         ];
     }

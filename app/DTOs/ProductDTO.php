@@ -3,18 +3,24 @@
 namespace App\DTOs;
 
 use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Storage;
 
 class ProductDTO
 {
 
     public function __construct(
         public string $title,
-        public string $image,
+        public  $image,
         public string $description,
         public bool $in_stock,
         public int $price,
 
     ) {
+        // $path = $this->image->file('avatar')->store('avatars');
+        $path = Storage::putFile('avatars', $this->image);
+        $this->image = $path;
+         
+
     }
 
     static public function fromApiRequest(ProductRequest $r)

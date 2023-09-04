@@ -8,7 +8,9 @@ use App\Models\User;
 use App\Models\Product;
 use App\Service\UserService;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Database\Factories\ProductFactory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,8 +24,10 @@ class ProductTest extends TestCase
     {
         parent::setUp();
         $user = User::factory()->create();
-        $this->token = (new UserService)->getToken($user);
-          
+        $service = new UserService;
+        $this->token = $service->getToken($user);
+        $role = $service->createAdminRole();
+        $user->assignRole($role);
     }
 
     public function test_creating_product_requires_price_field(): void
@@ -32,7 +36,7 @@ class ProductTest extends TestCase
             "title" => "shoes",
             "description" => "new shoes",
             "in_stock" => true,
-            "image" => "shoes.image"
+            "image" =>  UploadedFile::fake()->image('shoes.jpg')
         ],[
             "Authorization"=>"Bearer ".$this->token
         ]);
@@ -46,7 +50,7 @@ class ProductTest extends TestCase
 
             "description" => "new shoes",
             "in_stock" => true,
-            "image" => "shoes.image"
+            "image" => UploadedFile::fake()->image('shoes.jpg')
         ],[
             "Authorization"=>"Bearer ".$this->token
         ]);
@@ -58,7 +62,7 @@ class ProductTest extends TestCase
     {
         $response = $this->postJson('/api/admin/product', [
             "in_stock" => true,
-            "image" => "shoes.image"
+            "image" => UploadedFile::fake()->image('shoes.jpg')
         ],[
             "Authorization"=>"Bearer ".$this->token
         ]);
@@ -70,7 +74,7 @@ class ProductTest extends TestCase
     {
         $response = $this->postJson('/api/admin/product', [
             "in_stock" => true,
-            "image" => "shoes.image",
+            "image" => UploadedFile::fake()->image('shoes.jpg'),
             "title" => "shoes black",
             "price" => 200,
             "description" => "shoes.image",
@@ -79,6 +83,9 @@ class ProductTest extends TestCase
             "Authorization"=>"Bearer ".$this->token
         ]);
         $data = $response->json();
+       
+        // assert image exists
+        Storage::assertExists($data['data']['image']);
 
         $response->assertStatus(Response::HTTP_CREATED);
         $response->assertJsonMissingValidationErrors('title');
@@ -92,7 +99,7 @@ class ProductTest extends TestCase
 
         $response = $this->putJson("/api/admin/product/" . $number, [
             "in_stock" => true,
-            "image" => "shoes.image",
+            "image" => UploadedFile::fake()->image('shoes.jpg'),
             "title" => "shoes black updated",
             "price" => 200,
             "description" => "shoes.image",
@@ -111,7 +118,7 @@ class ProductTest extends TestCase
         $title = "shoes black updated";
         $response = $this->putJson("/api/admin/product/" . $product->id, [
             "in_stock" => true,
-            "image" => "shoes.image",
+            "image" => UploadedFile::fake()->image('shoes.jpg'),
             "title" => $title,
             "price" => 200,
             "description" => "shoes.image",

@@ -9,6 +9,7 @@ use App\Service\CategoryService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CategoryRequest;
 use App\Http\Resources\CategoryResource;
+use App\Http\Requests\SortCatSubsRequest;
 
 class CategoryController extends Controller
 {
@@ -43,6 +44,17 @@ class CategoryController extends Controller
         $category = $this->service->update(
             $category,
             CategoryDTO::fromApiRequest($r), 
+
+        );
+
+        return CategoryResource::make($category);
+    }
+    public function sortSubs(SortCatSubsRequest $r, Category $category)
+    {
+
+        $category = $this->service->sortCatSubs(
+            $category,
+             $r->validated("subs")
 
         );
 

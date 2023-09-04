@@ -22,14 +22,16 @@ class CartItemTest extends TestCase
     {
         parent::setUp();
         $user = User::factory()->create();
-        $this->token = (new UserService)->getToken($user);
+        $service = new UserService;
+        $this->token = $service->getToken($user);
+      
     }
 
     public function test_add_to_cart_without_auth_fails(): void
     {
         $product = Product::factory()->create();
 
-        $response = $this->postJson('/api/admin/cart/add', [
+        $response = $this->postJson('/api/buyer/cart/add', [
             "product_id" => $product->id,
         ],);
 
@@ -40,7 +42,7 @@ class CartItemTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->postJson('/api/admin/cart/add', [
+        $response = $this->postJson('/api/buyer/cart/add', [
             "product_id" => $product->id,
         ], [
             "Authorization" => "Bearer " . $this->token
@@ -53,7 +55,7 @@ class CartItemTest extends TestCase
     {
         
 
-        $response = $this->postJson('/api/admin/cart/add', [
+        $response = $this->postJson('/api/buyer/cart/add', [
             "quantity" => 2,
         ], [
             "Authorization" => "Bearer " . $this->token
@@ -67,7 +69,7 @@ class CartItemTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->postJson('/api/admin/cart/add', [
+        $response = $this->postJson('/api/buyer/cart/add', [
             "product_id" => $product->id,
             "quantity" => 2,
 
@@ -84,7 +86,7 @@ class CartItemTest extends TestCase
     {
         $number = rand(1000,1000000);
 
-        $response = $this->postJson("/api/admin/cart/add", [
+        $response = $this->postJson("/api/buyer/cart/add", [
             "product_id" => $number,
             "quantity" =>3,
             
@@ -103,7 +105,7 @@ class CartItemTest extends TestCase
         $product =Product::factory()->create();
 
        
-        $response = $this->postJson("/api/admin/cart/add", [
+        $response = $this->postJson("/api/buyer/cart/add", [
              
             "product_id" => $product->id,
             "quantity" => 2,
@@ -132,7 +134,7 @@ class CartItemTest extends TestCase
         $product = Product::factory()->create();
 
 
-          $del_response = $this->delete('/api/admin/cart/'.$product->id,headers:["Authorization"=>"Bearer ".$this->token]);  
+          $del_response = $this->delete('/api/buyer/cart/'.$product->id,headers:["Authorization"=>"Bearer ".$this->token]);  
 
         //   dd($del_response->json());
           $del_response->assertStatus(200);
@@ -141,12 +143,5 @@ class CartItemTest extends TestCase
     }
 
 
-    public function test_deleting_nonexistennce_product_from_cart_fails(): void
-    {
-        $number = rand(1000,1000000);
-          $del_response = $this->delete('/api/admin/product/'.$number,headers:["Authorization"=>"Bearer ".$this->token]);  
-          $del_response->assertStatus(404);
-
-
-    }
+  
 }

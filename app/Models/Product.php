@@ -2,12 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\Seachable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
     use HasFactory;
+    use Seachable;
+
+    protected $searchableFields = [
+         "title","description" 
+         ];
+
     protected   $fillable =[
         "title","image","description","price","in_stock"
     ];
