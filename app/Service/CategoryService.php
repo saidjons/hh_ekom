@@ -47,6 +47,19 @@ class CategoryService
         return $cat;
 
     }
+    // TODO: add sub one by one 
+    
+    public function addSub(
+        Category $category,
+        CategoryDTO $dto
+    ) {
+        $cat =  tap($category)->update([
+            "title" => $dto->title,
+            "parent_id" => $dto->parent_id,
+        ]);
+        return $cat;
+
+    }
 
     public function sortCatSubs(Category $cat,array $subs) {
         

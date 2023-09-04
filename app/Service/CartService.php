@@ -30,8 +30,7 @@ class CartService
 
 
     public function addItemToCart(
-        // TODO: find or create cart for auth user 
-        // it is function 
+       
         CartItemDTO $dto
     ) {
          $cart = $this->findOrCreate($dto->user_id);

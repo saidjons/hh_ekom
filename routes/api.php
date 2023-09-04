@@ -47,8 +47,11 @@ Route::prefix("admin")->middleware(["auth:sanctum","role:admin"])->group(functio
     Route::put("category/sort/{category}",[CategoryController::class,"sortSubs"]);
 
     Route::delete("category/{id}",[CategoryController::class,"delete"]);
+
+    Route::post("category/sub/add/{category}",[CategoryController::class,"addSubToCat"]);
     // TODO:add subs to category
     
+
     
         ####### cart ##############
   

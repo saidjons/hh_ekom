@@ -38,10 +38,30 @@ class CategoryController extends Controller
 
         return CategoryResource::make($category);
     }
+    public function addSub(CategoryRequest $r)
+    {
+
+        $category = $this->service->store(
+            CategoryDTO::fromApiRequest($r)
+        );
+
+        return CategoryResource::make($category);
+    }
     public function update(CategoryRequest $r, Category $category)
     {
 
         $category = $this->service->update(
+            $category,
+            CategoryDTO::fromApiRequest($r), 
+
+        );
+
+        return CategoryResource::make($category);
+    }
+    public function addSubToCat(CategoryRequest $r, Category $category)
+    {
+
+        $category = $this->service->addSub(
             $category,
             CategoryDTO::fromApiRequest($r), 
 

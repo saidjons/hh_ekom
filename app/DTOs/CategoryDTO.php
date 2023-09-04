@@ -23,7 +23,7 @@ class CategoryDTO
     ) {
         $this->title = $title;
         $this->parent_id = $parent_id;
-        $this->subs = $subs ;
+        $this->subs = $subs??[] ;
     }
 
     static public function fromApiRequest(CategoryRequest $r)
@@ -31,7 +31,7 @@ class CategoryDTO
         return new self(
             title: $r->validated("title"),
             parent_id: $r->validated("parent_id"),
-            subs:$r->validated("subs"),
+            subs:$r->validated("subs")??[],
         );
     }
 
